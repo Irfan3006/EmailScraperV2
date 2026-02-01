@@ -94,6 +94,8 @@ def crawl_stream(start_url, max_pages):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+        print("POST request received") 
     return render_template("index.html")
 
 @app.route("/scan")
