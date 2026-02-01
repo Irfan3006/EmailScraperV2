@@ -7,6 +7,7 @@ import time
 from urllib.parse import urlparse, urljoin
 
 app = Flask(__name__)
+
 @app.after_request
 def add_security_headers(response):
     csp = (
