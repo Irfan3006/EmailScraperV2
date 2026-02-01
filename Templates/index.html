@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Scraper</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
+
+    <!-- SEO -->
+    <meta name="title" content="Email Scraper // Advanced OSINT Email Enumerator & Scraper" />
+    <meta
+      name="description"
+      content="Powerful realtime OSINT tool to scrape and harvest email addresses from target websites. Features deep crawling, recursive spidering, and instant data exfiltration for ethical hacking reconnaissance."
+    />
+    <meta
+      name="keywords"
+      content="email scraper, osint tool, email enumeration, web crawler, cyber security, ethical hacking, reconnaissance, python flask, email harvester, amikom, irfan syarifudin"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="English" />
+    <meta name="author" content="Irfan Syarifudin" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://email-scraping-two.vercel.app/" />
+    <meta property="og:title" content="Email Scraper // Email Enumerator Tool" />
+    <meta
+      property="og:description"
+      content="Realtime OSINT reconnaissance tool for email harvesting. Deep scan capabilities with hacker-style terminal interface."
+    />
+    <meta property="og:image" content="https://email-scraping-two.vercel.app/static/logo.png" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://email-scraping-two.vercel.app/" />
+    <meta property="twitter:title" content="Email Scraper // Email Enumerator Tool" />
+    <meta
+      property="twitter:description"
+      content="Realtime OSINT reconnaissance tool for email harvesting. Deep scan capabilities with hacker-style terminal interface."
+    />
+    <meta property="twitter:image" content="https://email-scraping-two.vercel.app/static/logo.png" />
+
+    <meta name="theme-color" content="#050505" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        background-color: #050505;
+        background-image:
+          linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02));
+        background-size:
+          100% 2px,
+          3px 100%;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #22c55e;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #15803d;
+      }
+
+      .neon-border {
+        box-shadow:
+          0 0 10px rgba(34, 197, 94, 0.2),
+          inset 0 0 20px rgba(34, 197, 94, 0.05);
+      }
+      .neon-text {
+        text-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+      }
+
+      .cursor::after {
+        content: "█";
+        animation: blink 1s step-end infinite;
+        color: #22c55e;
+        margin-left: 5px;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-green-500 min-h-screen flex items-center justify-center p-4 pb-20">
+    <div class="w-full max-w-4xl relative z-10">
+      <div class="mb-6 flex items-end justify-between border-b border-green-800 pb-2">
+        <div>
+          <h1 class="text-3xl font-bold neon-text tracking-tighter">Email Scraper V2</h1>
+          <p class="text-xs text-green-700 mt-1 uppercase tracking-widest">Target Acquisition System</p>
+        </div>
+        <div class="text-xs text-green-800 text-right">
+          <p>STATUS: <span id="sysStatus" class="text-green-400">IDLE</span></p>
+          <p>USER: HEXA@ROOT</p>
+        </div>
+      </div>
+
+      <div class="bg-gray-900/80 border border-green-700 p-6 rounded-lg neon-border backdrop-blur-sm mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div class="md:col-span-8 group relative">
+            <label class="block text-xs text-green-700 mb-1">TARGET_URL</label>
+            <div class="flex items-center bg-black border border-green-800 focus-within:border-green-400 transition-colors rounded px-3 py-2">
+              <span class="text-green-700 mr-2">></span>
+              <input
+                id="url"
+                type="text"
+                placeholder="https://example.com"
+                class="bg-transparent border-none outline-none w-full text-green-300 placeholder-green-900 font-bold"
+              />
+            </div>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs text-green-700 mb-1">DEPTH</label>
+            <input
+              id="pages"
+              type="number"
+              value="5"
+              min="1"
+              max="50"
+              class="w-full bg-black border border-green-800 focus:border-green-400 text-center text-green-300 rounded px-2 py-2 outline-none"
+            />
+          </div>
+          <div class="md:col-span-2 flex items-end">
+            <button
+              id="startBtn"
+              type="button"
+              class="w-full bg-green-900/40 hover:bg-green-600/20 text-green-400 hover:text-green-200 border border-green-600 hover:border-green-300 font-bold py-2 rounded transition-all duration-200 shadow-[0_0_10px_rgba(0,255,0,0.1)] active:scale-95"
+            >
+              EXECUTE
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative mb-6">
+        <div
+          class="flex items-center justify-between bg-green-900/30 border-t border-l border-r border-green-700 px-4 py-1 rounded-t text-xs text-green-400/70"
+        >
+          <span>TERMINAL_OUTPUT</span>
+          <div class="flex space-x-2">
+            <div class="w-2 h-2 rounded-full bg-green-900"></div>
+            <div class="w-2 h-2 rounded-full bg-green-700"></div>
+            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          </div>
+        </div>
+        <div id="terminal" class="h-80 bg-black border border-green-700 rounded-b p-4 overflow-y-auto text-sm leading-relaxed shadow-inner font-mono">
+          <div class="text-green-800 mb-2">Initialize scanning protocol... waiting for input...</div>
+          <div class="cursor"></div>
+        </div>
+      </div>
+
+      <div id="resultPanel" class="hidden animate-[fadeIn_0.5s_ease-out]">
+        <div class="bg-black border border-green-500 rounded p-6 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+          <div class="flex justify-between items-center mb-4 border-b border-green-800 pb-2">
+            <h2 class="text-xl font-bold text-green-400">EXFILTRATED DATA REPORT</h2>
+            <span id="emailCountBadge" class="bg-green-900 text-green-300 px-2 py-1 rounded text-xs font-bold">0 FOUND</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-xs text-green-600 mb-2">CAPTURED_EMAILS_LIST:</p>
+              <div
+                id="emailList"
+                class="bg-gray-900/50 p-3 rounded h-40 overflow-y-auto text-sm border border-green-900 text-gray-300 font-mono"
+              ></div>
+            </div>
+
+            <div class="flex flex-col justify-end">
+              <div class="bg-green-900/20 p-4 rounded border border-green-800 mb-4">
+                <p class="text-xs text-green-500 mb-1">SCAN_SUMMARY</p>
+                <p class="text-xs text-gray-400">Target: <span id="summaryTarget" class="text-white">...</span></p>
+                <p class="text-xs text-gray-400">Time: <span id="summaryTime" class="text-white">...</span></p>
+              </div>
+              <a
+                id="downloadBtn"
+                href="#"
+                download="email_dump.txt"
+                class="block text-center bg-green-600 hover:bg-green-500 text-black font-bold py-3 rounded border border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all active:scale-95"
+              >
+                ⇩ DOWNLOAD.TXT
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-[10px] text-green-900">SECURE CONNECTION ESTABLISHED // HEXA_NODE_01</p>
+      </div>
+    </div>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const term = document.getElementById("terminal");
+      const statusLabel = document.getElementById("sysStatus");
+      const resultPanel = document.getElementById("resultPanel");
+      const emailListDiv = document.getElementById("emailList");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const emailCountBadge = document.getElementById("emailCountBadge");
+
+      let collectedEmails = new Set();
+      let targetUrl = "";
+
+      startBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        targetUrl = document.getElementById("url").value;
+        const pagesVal = document.getElementById("pages").value || "5";
+
+        if (!targetUrl) {
+          printLog("[-] ERROR: Target URL required.", "error");
+          return;
+        }
+
+        term.innerHTML = "";
+        resultPanel.classList.add("hidden");
+        collectedEmails.clear();
+        emailListDiv.innerHTML = "";
+
+        printLog("[*] Initializing spider...", "info");
+        statusLabel.innerText = "SCANNING...";
+        statusLabel.classList.add("animate-pulse");
+        startBtn.disabled = true;
+        startBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+        const urlEncoded = encodeURIComponent(targetUrl);
+        const es = new EventSource(`/scan?url=${urlEncoded}&pages=${pagesVal}`);
+
+        es.onmessage = (e) => {
+          if (e.data === "__END__") {
+            es.close();
+            finalizeScan();
+            return;
+          }
+
+          let msg = e.data;
+          let type = "default";
+
+          if (msg.includes("[EMAIL]")) {
+            type = "success";
+
+            const parts = msg.split("[EMAIL] ");
+            if (parts.length > 1) {
+              const emailClean = parts[1].trim();
+              collectedEmails.add(emailClean);
+            }
+          } else if (msg.includes("[-]")) {
+            type = "error";
+          } else if (msg.includes("===")) {
+            type = "highlight";
+          } else if (msg.includes("[+]")) {
+            type = "info";
+          }
+
+          printLog(msg, type);
+        };
+
+        es.onerror = (err) => {
+          printLog("[-] CRITICAL: Connection lost.", "error");
+          es.close();
+          statusLabel.innerText = "ERROR";
+          startBtn.disabled = false;
+          startBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        };
+      });
+
+      function finalizeScan() {
+        statusLabel.innerText = "COMPLETED";
+        statusLabel.classList.remove("animate-pulse");
+        startBtn.disabled = false;
+        startBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        printLog("[*] Session terminated. Generating report...", "info");
+
+        showResultPanel();
+      }
+
+      function showResultPanel() {
+        resultPanel.classList.remove("hidden");
+
+        emailCountBadge.innerText = `${collectedEmails.size} FOUND`;
+
+        if (collectedEmails.size === 0) {
+          emailListDiv.innerHTML = "<span class='text-gray-600 italic'>No data captured.</span>";
+        } else {
+          let htmlContent = "";
+          collectedEmails.forEach((email) => {
+            htmlContent += `<div class="border-b border-green-900/30 py-1 hover:text-white transition-colors">>> ${email}</div>`;
+          });
+          emailListDiv.innerHTML = htmlContent;
+        }
+
+        const emailArray = Array.from(collectedEmails);
+        const fileContent = `
+========================================
+  EMAIL SCRAPER REPORT
+========================================
+Target  : ${targetUrl}
+Date    : ${new Date().toLocaleString()}
+Found   : ${collectedEmails.size} emails
+========================================
+
+${emailArray.join("\n")}
+
+========================================
+       GENERATED BY HEXA@ROOT
+========================================
+            `.trim();
+
+        const blob = new Blob([fileContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        downloadBtn.href = url;
+
+        const cleanName = targetUrl.replace(/[^a-z0-9]/gi, "_").substring(0, 20);
+        downloadBtn.download = `dump_${cleanName}.txt`;
+
+        document.getElementById("summaryTarget").innerText = targetUrl;
+        document.getElementById("summaryTime").innerText = new Date().toLocaleTimeString();
+
+        resultPanel.scrollIntoView({ behavior: "smooth" });
+      }
+
+      function printLog(message, type) {
+        const div = document.createElement("div");
+        const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
+        const timestamp = `<span class="text-green-800 text-xs mr-2">[${time}]</span>`;
+
+        let contentClass = "text-green-400";
+        if (type === "success") contentClass = "text-white bg-green-900/50 px-1 font-bold border-l-2 border-green-400";
+        if (type === "error") contentClass = "text-red-500 font-bold";
+        if (type === "info") contentClass = "text-green-600";
+        if (type === "highlight") contentClass = "text-cyan-400 font-bold mt-4 mb-2 border-t border-dashed border-green-800 pt-2";
+
+        div.innerHTML = `${timestamp}<span class="${contentClass}">${message}</span>`;
+
+        const oldCursor = term.querySelector(".cursor");
+        if (oldCursor) oldCursor.remove();
+
+        term.appendChild(div);
+
+        const newCursor = document.createElement("div");
+        newCursor.className = "cursor";
+        term.appendChild(newCursor);
+
+        term.scrollTop = term.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
