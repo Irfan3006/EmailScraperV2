@@ -1,4 +1,7 @@
 {
+  "rewrites": [
+    { "source": "/(.*)", "destination": "app.py" }
+  ],
     "version": 2,
     "builds": [
         {
@@ -12,6 +15,7 @@
             "dest": "app.py"
         }
     ],
+    
       "headers": [
     {
       "source": "/(.*)",
